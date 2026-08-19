@@ -111,7 +111,9 @@ STAFF_MASTER: dict[str, Staff] = {
         base_salary=213_200, fixed_ot_allowance=12_400, fixed_ot_hours=8,
         diligence_allowance=6_900, weekend_holiday_allowance=5_000,
         is_manager=False, store="下北沢店＋町田店", hpb_name="Y.Reina / Reina",
-        training_salary=212_500, commute_amount=6_000,  # 6月明細より（★7月要確認）
+        # 7月通勤: 登戸↔下北沢往復460×6日(CSVで確定=2,760)
+        #          + 町田=デフォルト(登戸-町田 通勤定期3ヶ月28,130の1/3=9,377) = 12,137
+        training_salary=212_500, commute_amount=12_137,
     ),
 }
 
