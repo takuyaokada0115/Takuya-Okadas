@@ -19,6 +19,10 @@ LATE_NIGHT_RATE = 0.25  # 深夜割増（加算分）25%
 
 MANAGER_ALLOWANCE = 20_000  # 店長手当
 
+# 物販コミッション5%の対象に「回数券」を含めるか。★要確認（暫定=含めない）。
+# 指名料は物販5%の対象外（別途100%で支給）。
+INCLUDE_COUPON_IN_RETAIL = False
+
 
 @dataclass
 class PayrollResult:
@@ -93,7 +97,10 @@ def calculate(
 
     # インセンティブ・コミッション
     r.sales_incentive = incentive.sales_incentive(performance.total_sales)
-    r.retail_commission = incentive.retail_commission(performance.retail_sales)
+    retail_base = performance.product_sales
+    if INCLUDE_COUPON_IN_RETAIL:
+        retail_base += performance.coupon_sales
+    r.retail_commission = incentive.retail_commission(retail_base)
     r.option_commission = incentive.option_commission(performance.option_sales)
     r.nomination_pay = incentive.nomination_pay(performance.nomination_fee)
 

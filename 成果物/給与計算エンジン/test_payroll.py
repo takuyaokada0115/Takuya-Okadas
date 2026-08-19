@@ -51,7 +51,7 @@ def test_commissions():
 
 def test_manager_gross_no_extra_ot():
     staff = STAFF_MASTER["S001"]  # 谷本 真澄（正社員・店長）
-    perf = Performance(tech_sales=700_000, retail_sales=40_000,
+    perf = Performance(tech_sales=700_000, product_sales=40_000,
                        option_sales=20_000, nomination_fee=30_000)
     # 総売上 = 790,000 → インセンティブ 22,500
     # 実残業10h = 固定残業10h → 追加残業0
@@ -97,6 +97,21 @@ def test_fixed_term_with_allowances():
     assert r.manager_allowance == 0
     assert r.sales_incentive == 6_500
     assert r.taxable_gross == 244_000
+
+
+def test_retail_decomposition_and_nomination():
+    # HPB「店販」= 物販商品 + 回数券 + 指名料 の分解を検証（Masumi/谷本の実データ）
+    perf = Performance(tech_sales=609_580, option_sales=51_600,
+                       product_sales=27_000, coupon_sales=34_200, nomination_fee=31_200)
+    assert perf.retail_total == 92_400          # HPB店販列と一致
+    assert perf.total_sales == 753_580          # HPB総売上列と一致
+
+    staff = STAFF_MASTER["S001"]
+    r = calculate(staff, perf, Attendance(), "2026-07")
+    assert r.sales_incentive == 22_500          # 753,580 → [750k,800k)
+    assert r.nomination_pay == 31_200           # 指名料100%
+    assert r.retail_commission == 1_350         # 物販商品27,000×5%（回数券・指名料は対象外）
+    assert r.option_commission == 2_580         # 51,600×5%
 
 
 def test_training_month():

@@ -11,10 +11,10 @@ YEAR_MONTH = "2026-07"
 
 # サンプル月次実績（staff_id → 実績・勤怠）
 SAMPLE = {
-    "S001": (Performance(700_000, 40_000, 20_000, 30_000), Attendance(overtime_hours=12)),
-    "S002": (Performance(820_000, 30_000, 15_000, 25_000), Attendance(overtime_hours=10)),
-    "S003": (Performance(680_000, 20_000, 10_000, 12_000), Attendance(overtime_hours=9)),
-    "S004": (Performance(1_150_000, 60_000, 40_000, 50_000), Attendance(overtime_hours=15, holiday_hours=6)),
+    "S001": (Performance(tech_sales=700_000, product_sales=40_000, option_sales=20_000, nomination_fee=30_000), Attendance(overtime_hours=12)),
+    "S002": (Performance(tech_sales=820_000, product_sales=30_000, option_sales=15_000, nomination_fee=25_000), Attendance(overtime_hours=10)),
+    "S003": (Performance(tech_sales=680_000, product_sales=20_000, option_sales=10_000, nomination_fee=12_000), Attendance(overtime_hours=9)),
+    "S004": (Performance(tech_sales=1_150_000, product_sales=60_000, option_sales=40_000, nomination_fee=50_000), Attendance(overtime_hours=15, holiday_hours=6)),
 }
 
 
