@@ -23,7 +23,7 @@ DATA: dict[str, tuple] = {
         tech_sales=609_580, option_sales=51_600,
         product_sales=27_000, coupon_sales=34_200, nomination_fee=31_200,
         tech_count=139, nomination_count=6,
-    ), Attendance(overtime_hours=972/60), False),
+    ), Attendance(overtime_hours=972/60, holiday_hours=4.0), False),  # 7/21 半日休日出勤(採用面接)=4h暫定
     # 伊東 真菜（下北沢・まな）
     "S002": (Performance(
         tech_sales=577_000, option_sales=47_500,

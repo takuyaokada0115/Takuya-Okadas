@@ -33,10 +33,12 @@ class PayrollResult:
     year_month: str
 
     # 支給項目
-    base_component: int = 0        # 基本給+固定残業手当（研修中は研修月給）
-    diligence_allowance: int = 0   # 精勤/皆勤手当
+    monthly_salary: int = 0        # 月給（基本給。研修中は研修月給）
+    deemed_ot_allowance: int = 0   # みなし残業代（固定残業手当）
+    diligence_allowance: int = 0   # 皆勤手当
     weekend_holiday_allowance: int = 0  # 土日祝手当
     manager_allowance: int = 0     # 店長手当
+    machida_support: int = 0       # 町田支援手当
     sales_incentive: int = 0       # 売上インセンティブ
     retail_commission: int = 0     # 物販コミッション
     option_commission: int = 0     # オプションコミッション
@@ -50,10 +52,12 @@ class PayrollResult:
     def taxable_gross(self) -> int:
         """課税対象の総支給（通勤交通費を除く）。"""
         return (
-            self.base_component
+            self.monthly_salary
+            + self.deemed_ot_allowance
             + self.diligence_allowance
             + self.weekend_holiday_allowance
             + self.manager_allowance
+            + self.machida_support
             + self.sales_incentive
             + self.retail_commission
             + self.option_commission
@@ -84,16 +88,18 @@ def calculate(
     """1名・1か月分の総支給を計算する。"""
     r = PayrollResult(staff_id=staff.staff_id, name=staff.name, year_month=year_month)
 
-    # 基本部分（研修中は研修月給で置換）
+    # 月給・みなし残業代（研修中は月給を研修月給で置換）
     if is_training and staff.training_salary is not None:
-        r.base_component = staff.training_salary
+        r.monthly_salary = staff.training_salary
     else:
-        r.base_component = staff.base_salary + staff.fixed_ot_allowance
+        r.monthly_salary = staff.base_salary
+    r.deemed_ot_allowance = staff.fixed_ot_allowance
 
     # 契約手当
     r.diligence_allowance = staff.diligence_allowance
     r.weekend_holiday_allowance = staff.weekend_holiday_allowance
     r.manager_allowance = MANAGER_ALLOWANCE if staff.is_manager else 0
+    r.machida_support = staff.machida_support
 
     # インセンティブ・コミッション
     r.sales_incentive = incentive.sales_incentive(performance.total_sales)
@@ -119,24 +125,31 @@ def calculate(
 
 def format_payslip(r: PayrollResult) -> str:
     """内訳を人が読める給与明細テキストに整形する。"""
-    lines = [
-        f"=== {r.year_month} 給与明細（総支給）: {r.name}（{r.staff_id}）===",
-        f"  基本給+固定残業手当 : {r.base_component:>10,}",
-        f"  精勤/皆勤手当       : {r.diligence_allowance:>10,}",
-        f"  土日祝手当          : {r.weekend_holiday_allowance:>10,}",
-        f"  店長手当            : {r.manager_allowance:>10,}",
-        f"  売上インセンティブ  : {r.sales_incentive:>10,}",
-        f"  物販コミッション    : {r.retail_commission:>10,}",
-        f"  オプション          : {r.option_commission:>10,}",
-        f"  指名料              : {r.nomination_pay:>10,}",
-        f"  追加残業代          : {r.overtime_pay:>10,}",
-        f"  休日労働割増        : {r.holiday_pay:>10,}",
-        f"  深夜割増            : {r.late_night_pay:>10,}",
-        f"  ------------------------------------",
-        f"  課税対象 総支給     : {r.taxable_gross:>10,}",
-        f"  通勤交通費(非課税)  : {r.commute:>10,}",
-        f"  ====================================",
-        f"  総支給額            : {r.total_gross:>10,}",
-        f"  ※控除(社保・源泉・住民税)は freee人事労務 で計算",
+    def line(label, val):
+        return f"  {label:<22}: {val:>10,}"
+    lines = [f"=== {r.year_month} 給与明細（総支給）: {r.name}（{r.staff_id}）==="]
+    items = [
+        ("月給", r.monthly_salary),
+        ("みなし残業代", r.deemed_ot_allowance),
+        ("時間外労働手当(超過分)", r.overtime_pay),
+        ("法定休日労働手当", r.holiday_pay),
+        ("深夜労働手当", r.late_night_pay),
+        ("皆勤手当", r.diligence_allowance),
+        ("土日祝手当", r.weekend_holiday_allowance),
+        ("店長手当", r.manager_allowance),
+        ("町田支援手当", r.machida_support),
+        ("商品販売コミッション", r.retail_commission),
+        ("商品オプション販売コミッション", r.option_commission),
+        ("売上インセンティブ", r.sales_incentive),
+        ("指名料", r.nomination_pay),
     ]
+    for label, val in items:
+        if val:
+            lines.append(line(label, val))
+    lines.append("  " + "-" * 34)
+    lines.append(line("課税支給計", r.taxable_gross))
+    lines.append(line("通勤交通費(非課税)", r.commute))
+    lines.append("  " + "=" * 34)
+    lines.append(line("総支給額", r.total_gross))
+    lines.append("  ※控除(社保・源泉・住民税)は freee人事労務 で計算")
     return "\n".join(lines)

@@ -58,16 +58,17 @@ def test_manager_gross_no_extra_ot():
     att = Attendance(overtime_hours=10)
     r = calculate(staff, perf, att, "2026-07")
 
-    assert r.base_component == 232_500      # 217,100 + 15,400
+    assert r.monthly_salary == 207_900      # 補正後の基本給
+    assert r.deemed_ot_allowance == 10_000  # 補正後のみなし残業代
     assert r.diligence_allowance == 5_000
     assert r.manager_allowance == 20_000
+    assert r.machida_support == 10_000
     assert r.sales_incentive == 22_500
     assert r.retail_commission == 2_000
     assert r.option_commission == 1_000
     assert r.nomination_pay == 30_000
     assert r.overtime_pay == 0
-    assert r.taxable_gross == 313_000
-    assert r.total_gross == 313_000         # 通勤費未設定=0
+    assert r.taxable_gross == 308_400
 
 
 # --- 追加残業代（固定残業超過分のみ）------------------------------------------
@@ -78,9 +79,9 @@ def test_extra_overtime():
     att = Attendance(overtime_hours=12)     # 固定10h → 超過2h
     r = calculate(staff, perf, att, "2026-07")
 
-    expected = round(2 * (217_100 / 173.8) * 1.25)
+    expected = round(2 * (207_900 / 173.8) * 1.25)
     assert r.overtime_pay == expected
-    assert r.overtime_pay == 3_123
+    assert r.overtime_pay == 2_991
 
 
 # --- 有期契約・土日祝手当・研修中月給 -----------------------------------------
@@ -91,7 +92,8 @@ def test_fixed_term_with_allowances():
     att = Attendance(overtime_hours=8)      # 固定8h → 追加0
     r = calculate(staff, perf, att, "2026-05")
 
-    assert r.base_component == 225_600      # 213,200 + 12,400
+    assert r.monthly_salary == 213_200
+    assert r.deemed_ot_allowance == 12_400
     assert r.diligence_allowance == 6_900   # 皆勤手当
     assert r.weekend_holiday_allowance == 5_000
     assert r.manager_allowance == 0
@@ -119,7 +121,7 @@ def test_training_month():
     perf = Performance()
     att = Attendance()
     r = calculate(staff, perf, att, "2026-01", is_training=True)
-    assert r.base_component == 212_500      # 研修中月給で置換
+    assert r.monthly_salary == 212_500      # 研修中月給で置換
 
 
 if __name__ == "__main__":

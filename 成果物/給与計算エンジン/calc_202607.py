@@ -17,27 +17,27 @@ def main():
               f"→ 追加{max(0, att.overtime_hours - staff.fixed_ot_hours):.2f}h）\n")
         rows.append(r)
 
-    # Matsufuji（未登録）参考
-    inc = incentive.sales_incentive(MATSUFUJI.total_sales)
-    print("--- 松藤（Matsufuji/下北沢）: マスタ未登録のため総支給算出不可 ---")
-    print(f"    総売上 {MATSUFUJI.total_sales:,} → インセ {inc:,} / "
-          f"指名料 {MATSUFUJI.nomination_fee:,} / 物販 {incentive.retail_commission(MATSUFUJI.product_sales):,} / "
-          f"オプ {incentive.option_commission(MATSUFUJI.option_sales):,}\n")
+    # 松藤（業務委託・別体系）
+    print("--- 松藤 華奈（業務委託フルコミッション・下北沢）---")
+    print("    gyomu_itaku.py で計算（施術指名なし50%/指名60%は経費10%控除後、店販/オプ10%、交通費=片道160×2×勤務日数）。")
+    print("    7月分は『施術売上(指名なし)/指名売上』の内訳と勤務日数が必要（HPB要約+勤怠では不足）。\n")
 
     # サマリ表
     print("=== スタッフ別 総支給サマリ（7月分・8月支給）===")
-    print(f"{'氏名':<8}{'基本+固定残業':>12}{'手当計':>8}{'インセ':>8}{'物販':>7}{'オプ':>7}{'指名料':>8}{'残業':>8}{'総支給':>10}")
+    print(f"{'氏名':<8}{'月給':>9}{'みなし':>7}{'諸手当':>8}{'インセ':>7}{'物販':>6}{'オプ':>6}"
+          f"{'指名料':>7}{'時間外':>7}{'休日':>6}{'通勤':>7}{'総支給':>9}")
     total = 0
     for r in rows:
-        teate = r.diligence_allowance + r.weekend_holiday_allowance + r.manager_allowance
-        print(f"{r.name:<8}{r.base_component:>12,}{teate:>8,}{r.sales_incentive:>8,}"
-              f"{r.retail_commission:>7,}{r.option_commission:>7,}{r.nomination_pay:>8,}"
-              f"{r.overtime_pay:>8,}{r.total_gross:>10,}")
+        teate = r.diligence_allowance + r.weekend_holiday_allowance + r.manager_allowance + r.machida_support
+        print(f"{r.name:<8}{r.monthly_salary:>9,}{r.deemed_ot_allowance:>7,}{teate:>8,}{r.sales_incentive:>7,}"
+              f"{r.retail_commission:>6,}{r.option_commission:>6,}{r.nomination_pay:>7,}"
+              f"{r.overtime_pay:>7,}{r.holiday_pay:>6,}{r.commute:>7,}{r.total_gross:>9,}")
         total += r.total_gross
-    print(f"{'合計':<8}{'':>12}{'':>8}{'':>8}{'':>7}{'':>7}{'':>8}{'':>8}{total:>10,}")
-    print("\n※控除(社保・源泉・住民税)は freee人事労務 で計算。")
-    print("※谷本さんは7/21休日出勤(半日・採用面接)の休日出勤手当が別途必要（ルール未確認・未反映）。")
-    print("※松藤さんはマスタ未登録のため未算入。")
+    print(f"{'合計':<8}{total:>76,}")
+    print("\n※諸手当=皆勤+土日祝+店長+町田支援。控除(社保・源泉・住民税)は freee人事労務 で計算。")
+    print("※谷本: 基本給207,900/みなし10,000へ補正、7/21半日休日出勤(4h暫定)を法定休日労働手当に反映。")
+    print("※通勤交通費は6月明細の実額を暫定使用（7月実額は要確認）。")
+    print("※松藤(業務委託)は gyomu_itaku.py で別体系計算。7月の売上内訳(施術指名なし/指名売上)と勤務日数が必要。")
 
 
 if __name__ == "__main__":

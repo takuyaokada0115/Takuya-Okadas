@@ -29,9 +29,10 @@ class Staff:
     base_salary: int              # 基本給
     fixed_ot_allowance: int       # 固定残業手当
     fixed_ot_hours: float         # 固定残業時間
-    diligence_allowance: int      # 精勤手当（正社員）/ 皆勤手当（有期）
+    diligence_allowance: int      # 皆勤手当（freee明細では全員「皆勤手当」表記）
     weekend_holiday_allowance: int = 0  # 土日祝手当（有期のみ・★支給条件は暫定=月額固定）
     is_manager: bool = False      # 店長手当¥20,000の対象
+    machida_support: int = 0      # 町田支援手当（谷本のみ・6月明細より¥10,000）
     store: str = ""               # 所属店舗
     hpb_name: str = ""            # HPBサロンボード上の表示名（実績突合キー）
     commute_amount: int = 0       # 実通勤交通費（非課税・上限3万で丸め）
@@ -80,31 +81,37 @@ class Attendance:
 # --- 登録済みスタッフマスタ --------------------------------------------------
 
 STAFF_MASTER: dict[str, Staff] = {
+    # 谷本: 6月明細は月給217,100/みなし15,400だったが、ユーザー指示によりJuly分は
+    # 基本給207,900/みなし残業代10,000へ補正（★みなし残業時間は10hのまま暫定）。
+    # 通勤交通費は6月明細の実額を暫定使用（★7月実額は要確認）。
     "S001": Staff(
         staff_id="S001", name="谷本 真澄", employment_type="正社員",
-        base_salary=217_100, fixed_ot_allowance=15_400, fixed_ot_hours=10,
+        base_salary=207_900, fixed_ot_allowance=10_000, fixed_ot_hours=10,
         diligence_allowance=5_000, weekend_holiday_allowance=0,
-        is_manager=True, store="下北沢店", hpb_name="Masumi",
+        is_manager=True, machida_support=10_000, store="下北沢店", hpb_name="Masumi",
+        # 7月通勤: 6月実額9,566 + 小田急 下北沢↔町田 往復1回(IC片道360×2=720) = 10,286
+        commute_amount=10_286,
     ),
     "S002": Staff(
         staff_id="S002", name="伊東 真菜", employment_type="正社員",
         base_salary=217_100, fixed_ot_allowance=15_400, fixed_ot_hours=10,
         diligence_allowance=5_000, weekend_holiday_allowance=0,
         is_manager=False, store="下北沢店", hpb_name="Itou",
+        commute_amount=0,
     ),
     "S003": Staff(
         staff_id="S003", name="山口 涼風", employment_type="有期契約",
         base_salary=213_200, fixed_ot_allowance=12_400, fixed_ot_hours=8,
         diligence_allowance=6_900, weekend_holiday_allowance=5_000,
-        is_manager=False, store="町田店", hpb_name="",  # ★HPB表示名は町田実績で確認
-        training_salary=212_500,  # 研修: 2026/1
+        is_manager=False, store="町田店", hpb_name="Y.Suzuka",
+        training_salary=212_500, commute_amount=23_620,  # 6月明細より（★7月要確認）
     ),
     "S004": Staff(
         staff_id="S004", name="横井 零奈", employment_type="有期契約",
         base_salary=213_200, fixed_ot_allowance=12_400, fixed_ot_hours=8,
         diligence_allowance=6_900, weekend_holiday_allowance=5_000,
-        is_manager=False, store="下北沢店", hpb_name="Y.Reina",
-        training_salary=212_500,  # 研修: 2025/10
+        is_manager=False, store="下北沢店＋町田店", hpb_name="Y.Reina / Reina",
+        training_salary=212_500, commute_amount=6_000,  # 6月明細より（★7月要確認）
     ),
 }
 
