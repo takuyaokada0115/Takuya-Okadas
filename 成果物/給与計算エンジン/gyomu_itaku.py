@@ -12,9 +12,11 @@
   ・支給合計 = 5種コミッション + 交通費
 """
 
+import math
 from dataclasses import dataclass
 
 EXPENSE_RATE = 0.10  # 経費控除率（施術・指名・自身顧客のみ）
+# 規定エクセル(松藤華奈様_コミッション計算_FY26)は ROUNDDOWN(切り捨て)
 
 
 @dataclass
@@ -46,11 +48,11 @@ class GyomuInput:
 
 def calc(g: GyomuInput, rates: RateSet = RATES_OLD) -> dict:
     net = 1 - EXPENSE_RATE
-    own = round(g.own_customer_sales * net * rates.own)
-    treat = round(g.treatment_sales * net * rates.treat)
-    nom = round(g.nomination_sales * net * rates.nom)
-    retail = round(g.retail_sales * rates.retail)
-    option = round(g.option_sales * rates.option)
+    own = math.floor(g.own_customer_sales * net * rates.own)
+    treat = math.floor(g.treatment_sales * net * rates.treat)
+    nom = math.floor(g.nomination_sales * net * rates.nom)
+    retail = math.floor(g.retail_sales * rates.retail)
+    option = math.floor(g.option_sales * rates.option)
     transport = g.one_way_fare * 2 * g.work_days if rates.transport else 0
     total = own + treat + nom + retail + option + transport
     return {
@@ -80,5 +82,5 @@ if __name__ == "__main__":
     print("\n2026年7月 松藤 業務委託（新料率）:")
     for k, v in rj.items():
         print(f"  {k}: {v:,}")
-    assert rj["支給合計"] == 139_778, rj["支給合計"]
-    print("7月 支給合計 = 139,778")
+    assert rj["支給合計"] == 139_777, rj["支給合計"]
+    print("7月 支給合計 = 139,777（規定エクセルROUNDDOWN準拠）")
