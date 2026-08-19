@@ -86,7 +86,7 @@ STAFF_MASTER: dict[str, Staff] = {
     # 通勤交通費は6月明細の実額を暫定使用（★7月実額は要確認）。
     "S001": Staff(
         staff_id="S001", name="谷本 真澄", employment_type="正社員",
-        base_salary=207_900, fixed_ot_allowance=37_381, fixed_ot_hours=25,  # みなし25h(=207900/173.8×1.25×25)
+        base_salary=207_900, fixed_ot_allowance=10_000, fixed_ot_hours=25,  # みなし代は¥10,000据置・枠のみ25h
         diligence_allowance=5_000, weekend_holiday_allowance=0,
         is_manager=True, machida_support=10_000, store="下北沢店", hpb_name="Masumi",
         # 7月通勤: 6月実額9,566 + 小田急 下北沢↔町田 往復1回(IC片道360×2=720) = 10,286
@@ -94,21 +94,21 @@ STAFF_MASTER: dict[str, Staff] = {
     ),
     "S002": Staff(
         staff_id="S002", name="伊東 真菜", employment_type="正社員",
-        base_salary=217_100, fixed_ot_allowance=39_036, fixed_ot_hours=25,  # みなし25h(=217100/173.8×1.25×25)
+        base_salary=217_100, fixed_ot_allowance=15_400, fixed_ot_hours=25,  # みなし代¥15,400据置・枠のみ25h
         diligence_allowance=5_000, weekend_holiday_allowance=0,
         is_manager=False, store="下北沢店", hpb_name="Itou",
         commute_amount=0,
     ),
     "S003": Staff(
         staff_id="S003", name="山口 涼風", employment_type="有期契約",
-        base_salary=213_200, fixed_ot_allowance=38_334, fixed_ot_hours=25,  # みなし25h(=213200/173.8×1.25×25)
+        base_salary=213_200, fixed_ot_allowance=12_400, fixed_ot_hours=25,  # みなし代¥12,400据置・枠のみ25h
         diligence_allowance=6_900, weekend_holiday_allowance=5_000,
         is_manager=False, store="町田店", hpb_name="Y.Suzuka",
         training_salary=212_500, commute_amount=23_620,  # 6月明細より（★7月要確認）
     ),
     "S004": Staff(
         staff_id="S004", name="横井 零奈", employment_type="有期契約",
-        base_salary=213_200, fixed_ot_allowance=38_334, fixed_ot_hours=25,  # みなし25h(=213200/173.8×1.25×25)
+        base_salary=213_200, fixed_ot_allowance=12_400, fixed_ot_hours=25,  # みなし代¥12,400据置・枠のみ25h
         diligence_allowance=6_900, weekend_holiday_allowance=5_000,
         is_manager=False, store="下北沢店＋町田店", hpb_name="Y.Reina / Reina",
         # 7月通勤: 登戸↔下北沢往復460×6日(CSVで確定=2,760)
