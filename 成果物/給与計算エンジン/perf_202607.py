@@ -23,26 +23,26 @@ DATA: dict[str, tuple] = {
         tech_sales=609_580, option_sales=51_600,
         product_sales=27_000, coupon_sales=34_200, nomination_fee=31_200,
         tech_count=139, nomination_count=6,
-    ), Attendance(overtime_hours=972/60, holiday_hours=4.0), False),  # 7/21 半日休日出勤(採用面接)=4h暫定
+    ), Attendance(overtime_hours=1100/60, holiday_hours=4.0), False),  # 実働-8h=18h20m, 7/21半日休日出勤4h
     # 伊東 真菜（下北沢・まな）
     "S002": (Performance(
         tech_sales=577_000, option_sales=47_500,
         product_sales=15_400, coupon_sales=53_400, nomination_fee=6_600,
         tech_count=133, nomination_count=2,
-    ), Attendance(overtime_hours=177/60), False),
+    ), Attendance(overtime_hours=398/60), False),  # 実働-8h=6h38m
     # 山口 涼風（町田・Y.Suzuka）※キャンペーン5,400はcoupon扱い(物販5%対象外・暫定)
     "S003": (Performance(
         tech_sales=748_680, option_sales=35_400,
         product_sales=24_200, coupon_sales=5_400, nomination_fee=2_400,
         tech_count=147, nomination_count=6,
-    ), Attendance(overtime_hours=550/60), False),
+    ), Attendance(overtime_hours=1042/60), False),  # 実働-8h=17h22m
     # 横井 零奈（下北沢 Y.Reina + 町田 Reina を合算）
     "S004": (Performance(
         tech_sales=164_700 + 491_720, option_sales=6_000 + 11_900,
         product_sales=4_400 + 12_800, coupon_sales=0,
         nomination_fee=0 + 5_700,
         tech_count=33 + 97, nomination_count=0 + 3,
-    ), Attendance(overtime_hours=702/60), False),
+    ), Attendance(overtime_hours=823/60), False),  # 実働-8h=13h43m
 }
 
 # 検算: 各人の店販列・総売上（下北沢/町田のHPB表示値と一致）

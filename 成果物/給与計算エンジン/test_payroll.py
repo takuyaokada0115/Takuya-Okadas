@@ -59,7 +59,7 @@ def test_manager_gross_no_extra_ot():
     r = calculate(staff, perf, att, "2026-07")
 
     assert r.monthly_salary == 207_900      # 補正後の基本給
-    assert r.deemed_ot_allowance == 10_000  # 補正後のみなし残業代
+    assert r.deemed_ot_allowance == 37_381  # みなし残業25h相当
     assert r.diligence_allowance == 5_000
     assert r.manager_allowance == 20_000
     assert r.machida_support == 10_000
@@ -68,7 +68,7 @@ def test_manager_gross_no_extra_ot():
     assert r.option_commission == 1_000
     assert r.nomination_pay == 30_000
     assert r.overtime_pay == 0
-    assert r.taxable_gross == 308_400
+    assert r.taxable_gross == 335_781
 
 
 # --- 追加残業代（固定残業超過分のみ）------------------------------------------
@@ -76,7 +76,7 @@ def test_manager_gross_no_extra_ot():
 def test_extra_overtime():
     staff = STAFF_MASTER["S001"]
     perf = Performance()
-    att = Attendance(overtime_hours=12)     # 固定10h → 超過2h
+    att = Attendance(overtime_hours=27)     # 固定(みなし)25h → 超過2h
     r = calculate(staff, perf, att, "2026-07")
 
     expected = round(2 * (207_900 / 173.8) * 1.25)
@@ -93,12 +93,12 @@ def test_fixed_term_with_allowances():
     r = calculate(staff, perf, att, "2026-05")
 
     assert r.monthly_salary == 213_200
-    assert r.deemed_ot_allowance == 12_400
+    assert r.deemed_ot_allowance == 38_334   # みなし残業25h相当
     assert r.diligence_allowance == 6_900   # 皆勤手当
     assert r.weekend_holiday_allowance == 5_000
     assert r.manager_allowance == 0
     assert r.sales_incentive == 6_500
-    assert r.taxable_gross == 244_000
+    assert r.taxable_gross == 269_934
 
 
 def test_retail_decomposition_and_nomination():
