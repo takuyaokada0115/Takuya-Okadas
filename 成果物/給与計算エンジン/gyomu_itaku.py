@@ -76,11 +76,12 @@ if __name__ == "__main__":
     # 2026年7月（新料率・8月支給）: 下北沢売上明細CSVより
     #  施術(指名なし)352,480 / 施術(指名あり)24,800 / 店販(物販)15,400 / オプ19,100
     #  ご自身の顧客(フジイユメカ)=0(当月は施術なし) / 指名料は売上から除外 / 交通費なし
-    jul = GyomuInput(own_customer_sales=0, treatment_sales=352_480,
-                     nomination_sales=24_800, retail_sales=15_400, option_sales=19_100)
+    # フジイユメカの¥500(オプション)は自己顧客(60%)扱い→own_customer_salesへ、optionは18,600
+    jul = GyomuInput(own_customer_sales=500, treatment_sales=352_480,
+                     nomination_sales=24_800, retail_sales=15_400, option_sales=18_600)
     rj = calc(jul, RATES_NEW)
     print("\n2026年7月 松藤 業務委託（新料率）:")
     for k, v in rj.items():
         print(f"  {k}: {v:,}")
-    assert rj["支給合計"] == 139_777, rj["支給合計"]
-    print("7月 支給合計 = 139,777（規定エクセルROUNDDOWN準拠）")
+    assert rj["支給合計"] == 140_022, rj["支給合計"]
+    print("7月 支給合計 = 140,022（規定エクセルROUNDDOWN準拠）")
