@@ -18,7 +18,7 @@ AUG = {
     "S002": {"weekend_holiday_allowance": 0,     "commute_amount": 0},
     "S003": {"weekend_holiday_allowance": 5_000, "commute_amount": 23_620},
     # 横井: 土日祝0(8/11欠)。通勤=町田定期1/3(9,377)+下北沢日数×460 → 日数未確定のため町田分のみ暫定
-    "S004": {"weekend_holiday_allowance": 0,     "commute_amount": 9_377},
+    "S004": {"weekend_holiday_allowance": 0,     "commute_amount": 11_677},  # 町田定期1/3(9,377)+下北沢5日×460
 }
 
 
@@ -41,7 +41,7 @@ def main():
               f"{r.sales_incentive:>7,}{r.retail_commission:>6,}{r.option_commission:>6,}{r.nomination_pay:>7,}"
               f"{r.taxable_gross:>9,}{r.commute:>7,}{r.total_gross:>9,}")
         total += r.total_gross
-    print(f"\n社員4名 総支給合計: {total:,} 円（横井の通勤は町田分のみ暫定＝下北沢出勤日数×460が別途）")
+    print(f"\n社員4名 総支給合計: {total:,} 円（通勤8月実額確定: 横井=町田定期1/3+下北沢5日×460=11,677）")
     print("※松藤(業務委託)は別体系（8月の指名別売上内訳と勤務日数の売上明細CSVが必要）。")
 
 
