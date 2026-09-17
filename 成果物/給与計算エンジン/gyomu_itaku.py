@@ -15,8 +15,8 @@
 import math
 from dataclasses import dataclass
 
-EXPENSE_RATE = 0.10  # 経費控除率（施術・指名・自身顧客のみ）
 # 規定エクセル(松藤華奈様_コミッション計算_FY26)は ROUNDDOWN(切り捨て)
+# 経費控除率は期間で改定（〜8月=10% → 9月〜=5%）。RateSet.expense で保持。
 
 
 @dataclass
@@ -27,12 +27,20 @@ class RateSet:
     retail: float
     option: float
     transport: bool  # 交通費を支給するか
+    expense: float = 0.10  # 経費控除率（施術・指名・自身顧客のみ）
 
 
-# 〜2026年6月（旧料率）
-RATES_OLD = RateSet(own=0.70, treat=0.50, nom=0.60, retail=0.10, option=0.10, transport=True)
-# 2026年7月〜（新料率：施術/指名/自身顧客を引下げ、店販/オプ5%、交通費なし）
-RATES_NEW = RateSet(own=0.60, treat=0.40, nom=0.50, retail=0.05, option=0.05, transport=False)
+# 〜2026年6月（旧料率）: 自身70/指名なし50/指名60/店販オプ10/経費10%・交通費あり
+RATES_OLD = RateSet(own=0.70, treat=0.50, nom=0.60, retail=0.10, option=0.10,
+                    transport=True, expense=0.10)
+# 2026年7月〜8月（新料率）: 自身60/指名なし40/指名50/店販オプ5/経費10%・交通費なし
+RATES_NEW = RateSet(own=0.60, treat=0.40, nom=0.50, retail=0.05, option=0.05,
+                    transport=False, expense=0.10)
+# 2026年9月〜: 料率設定を再確認した結果、7〜8月の新料率と同一で確定
+#   （自身60/指名なし40/指名50/店販オプ5/経費控除10%・交通費なし）＝実質変更なし。
+#   ※RateSet.expense は将来の経費率改定に備えて保持（現状は10%据置）。
+RATES_SEP = RateSet(own=0.60, treat=0.40, nom=0.50, retail=0.05, option=0.05,
+                    transport=False, expense=0.10)
 
 
 @dataclass
@@ -47,7 +55,7 @@ class GyomuInput:
 
 
 def calc(g: GyomuInput, rates: RateSet = RATES_OLD) -> dict:
-    net = 1 - EXPENSE_RATE
+    net = 1 - rates.expense
     own = math.floor(g.own_customer_sales * net * rates.own)
     treat = math.floor(g.treatment_sales * net * rates.treat)
     nom = math.floor(g.nomination_sales * net * rates.nom)
@@ -85,3 +93,17 @@ if __name__ == "__main__":
         print(f"  {k}: {v:,}")
     assert rj["支給合計"] == 140_022, rj["支給合計"]
     print("7月 支給合計 = 140,022（規定エクセルROUNDDOWN準拠）")
+
+    # 8月（新料率・交通費なし・経費10%）: 指名なし485,880 / 指名20,280 / 店販4,400 / オプ22,100
+    aug = GyomuInput(treatment_sales=485_880, nomination_sales=20_280,
+                     retail_sales=4_400, option_sales=22_100)
+    assert calc(aug, RATES_NEW)["支給合計"] == 185_367, calc(aug, RATES_NEW)["支給合計"]
+    print("8月 支給合計 = 185,367（新料率・経費10%）")
+
+    # 2026年9月〜: 料率設定を再確認 → 7〜8月の新料率と同一で確定（経費控除10%据置）
+    print("\n【2026年9月〜 料率表（RATES_SEP）】"
+          f"\n  ご自身の顧客 {RATES_SEP.own:.0%} / 指名なし {RATES_SEP.treat:.0%} / "
+          f"指名 {RATES_SEP.nom:.0%} / 店販・オプ {RATES_SEP.retail:.0%} / "
+          f"経費控除 {RATES_SEP.expense:.0%} / 交通費 {'あり' if RATES_SEP.transport else 'なし'}")
+    assert calc(aug, RATES_SEP)["支給合計"] == calc(aug, RATES_NEW)["支給合計"]
+    print("  → 7〜8月の新料率と同一（実質変更なし）を確認")
