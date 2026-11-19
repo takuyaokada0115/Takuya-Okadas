@@ -45,10 +45,11 @@ NEW = {
  "斉藤": dict(uriage=715790, nominatefee=1200, biyoueki=37400, hbl=0, option=32200,
              base=212500, deemed=7440, kaikin=6900, tencho=0, machida=0, wkhol=5000, commute=22726),
  "渡邉": dict(uriage=279500, nominatefee=0, biyoueki=4400, hbl=0, option=15000,
-             base=212500, deemed=0, kaikin=0, tencho=0, machida=0, wkhol=0, commute=1240),
+             base=212500, deemed=12400, kaikin=6900, tencho=0, machida=0, wkhol=0, commute=1240),
+             # ※基本給は研修(10/1-16 @212,500)→本採用(10/17-31 @213,000)でfreee日割。みなし/皆勤は有期契約値(本採用分)。通勤は定期3ヶ月/3の額が要確定
 }
 
-def calc(d, hbl_in_bupan=False):
+def calc(d, hbl_in_bupan=True):   # HBL beautyも物販5%対象（ユーザー確定）
     inc = incentive(d["uriage"])
     bp = d["biyoueki"] + (d["hbl"] if hbl_in_bupan else 0)
     com = comm(bp, d["option"])
