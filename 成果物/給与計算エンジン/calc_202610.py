@@ -36,14 +36,16 @@ S = {
  "伊東": dict(uriage=777350, nominatefee=13200, biyoueki=32450, hbl=0, option=53800,
              base=217100, deemed=12400, kaikin=6900, tencho=0, machida=0, wkhol=0, commute=0),
  "山口": dict(uriage=761400, nominatefee=6000,  biyoueki=12600, hbl=0, option=37700,
-             base=213200, deemed=12400, kaikin=6900, tencho=0, machida=0, wkhol=5000, commute=23620),
+             base=213200, deemed=12400, kaikin=0, tencho=0, machida=0, wkhol=5000, commute=23620),
+             # 皆勤手当=0: 自己都合早退(10/21・10/26が短時間勤務)により皆勤不成立
  "横井": dict(uriage=646590, nominatefee=2400,  biyoueki=9800,  hbl=0, option=25650,
              base=213200, deemed=12400, kaikin=6900, tencho=0, machida=0, wkhol=0, commute=15197),
 }
 # 新2名（要確認項目あり: 斉藤 土日祝/みなし枠, 渡邉 みなし/基本給日割/皆勤/通勤定期）
 NEW = {
  "斉藤": dict(uriage=715790, nominatefee=1200, biyoueki=37400, hbl=0, option=32200,
-             base=212500, deemed=7440, kaikin=6900, tencho=0, machida=0, wkhol=5000, commute=22726),
+             base=212500, deemed=12400, kaikin=6900, tencho=0, machida=0, wkhol=5000, commute=22726),
+             # みなし残業代=12,400(有期契約どおり。freee現行7,440から訂正)
  "渡邉": dict(uriage=279500, nominatefee=0, biyoueki=4400, hbl=0, option=15000,
              base=212500, deemed=12400, kaikin=6900, tencho=0, machida=0, wkhol=0, commute=18130),
              # 通勤=祖師ヶ谷大蔵-下北沢 3ヶ月定期18,130を10月にまとめ支給。基本給は研修(10/1-16 @212,500)→本採用(10/17-31 @213,000)でfreee日割。みなし/皆勤は有期本採用分
